@@ -50,7 +50,7 @@ export const tokenPayout = async (accountId) => {
     const txResponse = await tx.execute(client);
     const receipt = await txResponse.getReceipt(client);
     if (receipt.status._code == 22) {
-      console.debug(`${payout / Math.pow(10, tokenDecimals)} $PACT transferred to ${accountId}`);
+      console.debug(`${payout / Math.pow(10, tokenDecimals)} $DINU transferred to ${accountId}`);
     } else {
       throw new Error(`Receipt status is not a success!`);
     }

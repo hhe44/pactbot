@@ -8,8 +8,8 @@ const token = config.DISCORD_TOKEN;
 
 const commands = [
   {
-    name: "pray",
-    description: "Commune with the Prayer Bot and receive your allotment of PACT.",
+    name: "pull",
+    description: "Receive your allotment of $DINU from the dankbot, resets every 8 hours",
     options: [
       { name: "account-id", description: "Hedera Hashgraph Account ID, i.e., 0.0.1234567", type: ApplicationCommandOptionType.String, required: true },
     ]

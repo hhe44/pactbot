@@ -2,7 +2,7 @@ import { Client as DiscordClient, IntentsBitField } from "discord.js";
 import { tokenPayout, tokenAssociationCheck } from "./hedera.js";
 import { registerCommands } from "./commands.js";
 import { supabase } from "./db.js";
-import { clearTableEvery24Hours } from "./cronjob.js";
+import { clearTableEvery8Hours } from "./cronjob.js";
 import * as config from "../config.js";
 
 const discordBot = new DiscordClient({
@@ -22,7 +22,7 @@ discordBot.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
   try {
     switch (interaction.commandName) {
-      case "pray":
+      case "pull":
         const accountId = interaction.options.get("account-id").value;
         // Checks against accountId including:
         // Null or Empty Check, Length Check
@@ -36,7 +36,8 @@ discordBot.on("interactionCreate", async (interaction) => {
           break;
         }
         let { data, error } = await supabase
-          .from("prayers")
+        // TODO: get table name to put in as argument for method below
+          .from()
           .select("accountId")
           .eq("accountId", accountId);
         if (error || data.length > 1) {
@@ -46,7 +47,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           break;
         } else if (data.length === 1) {
           const { hrs, mins } = getResetTime();
-          interaction.reply(`Your allotment of PACT was given, check back in ${hrs} hours and ${mins} minutes.`);
+          interaction.reply(`Your allotment of $DINU was given, check back in ${hrs} hours and ${mins} minutes.`);
           break;
         } else {
           const isAssociated = await tokenAssociationCheck(accountId);
@@ -56,8 +57,9 @@ discordBot.on("interactionCreate", async (interaction) => {
           }
           await interaction.deferReply();
           await tokenPayout(accountId);
-          await supabase.from("prayers").insert([{ accountId }]);
-          interaction.editReply(`We have heard your prayers; your PACT with the Four has been renewed.`);
+          // TODO: get table name to put in as argument for method below
+          await supabase.from().insert([{ accountId }]);
+          interaction.editReply(`Your $DINU has been successfully sent to your account.`);
           break;
         }
       default:
@@ -70,11 +72,11 @@ discordBot.on("interactionCreate", async (interaction) => {
 });
 
 const getResetTime = () => {
-  const resetTime = 24 * 60 - Math.floor((new Date().getTime() / (1000 * 60)) % (24 * 60));
+  const resetTime = 8 * 60 - Math.floor((new Date().getTime() / (1000 * 60)) % (8 * 60));
   const hrs = Math.floor(resetTime / 60);
   const mins = Math.floor(resetTime % 60);
   return { hrs, mins };
 };
 
-clearTableEvery24Hours();
+clearTableEvery8Hours();
 discordBot.login(config.DISCORD_TOKEN);
