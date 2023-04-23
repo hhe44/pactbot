@@ -37,7 +37,7 @@ discordBot.on("interactionCreate", async (interaction) => {
         }
         let { data, error } = await supabase
         // TODO: get table name to put in as argument for method below
-          .from()
+          .from("danktable")
           .select("accountId")
           .eq("accountId", accountId);
         if (error || data.length > 1) {
@@ -57,8 +57,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           }
           await interaction.deferReply();
           await tokenPayout(accountId);
-          // TODO: get table name to put in as argument for method below
-          await supabase.from().insert([{ accountId }]);
+          await supabase.from("danktable").insert([{ accountId }]);
           interaction.editReply(`Your $DINU has been successfully sent to your account.`);
           break;
         }
