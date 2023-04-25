@@ -1,5 +1,5 @@
 import { Client as DiscordClient, IntentsBitField } from "discord.js";
-import { tokenPayout, tokenAssociationCheck } from "./hedera.js";
+import { tokenPayout, tokenBalanceCheck } from "./hedera.js";
 import { registerCommands } from "./commands.js";
 import { supabase } from "./db.js";
 import { clearTableEvery8Hours } from "./cronjob.js";
@@ -24,9 +24,6 @@ discordBot.on("interactionCreate", async (interaction) => {
     switch (interaction.commandName) {
       case "pull":
         const accountId = interaction.options.get("account-id").value;
-        // Checks against accountId including:
-        // Null or Empty Check, Length Check
-        // Regex Check for 0.0.1234567... format
         if (
           !accountId ||
           accountId.length > 32 ||
@@ -36,7 +33,6 @@ discordBot.on("interactionCreate", async (interaction) => {
           break;
         }
         let { data, error } = await supabase
-        // TODO: get table name to put in as argument for method below
           .from("danktable")
           .select("accountId")
           .eq("accountId", accountId);
@@ -50,13 +46,13 @@ discordBot.on("interactionCreate", async (interaction) => {
           interaction.reply(`Your allotment of $DINU was given, check back in ${hrs} hours and ${mins} minutes.`);
           break;
         } else {
-          const isAssociated = await tokenAssociationCheck(accountId);
+          const { isAssociated, isAdopter, isDankster, isWinner } = await tokenBalanceCheck(accountId);
           if (!isAssociated) {
-            interaction.reply(`You have not associated with the token ID: ${config.HEDERA_TOKEN_ID}`);
+            interaction.reply(`You have not associated with the token ID: ${config.DINU_TOKEN_ID}`);
             break;
           }
           await interaction.deferReply();
-          await tokenPayout(accountId);
+          await tokenPayout(accountId, isAdopter, isDankster, isWinner);
           await supabase.from("danktable").insert([{ accountId }]);
           interaction.editReply(`Your $DINU has been successfully sent to your account.`);
           break;

@@ -16,9 +16,10 @@ export const HEDERA_NETWORK = process.env.HEDERA_NETWORK;
 export const HEDERA_OPERATOR_ID = process.env.HEDERA_OPERATOR_ID;
 export const HEDERA_OPERATOR_PRIVATE_KEY = process.env.HEDERA_OPERATOR_PRIVATE_KEY;
 
-export const HEDERA_TOKEN_DECIMALS = process.env.HEDERA_TOKEN_DECIMALS;
-export const HEDERA_TOKEN_DRIP_RATE = process.env.HEDERA_TOKEN_DRIP_RATE;
-export const HEDERA_TOKEN_ID = process.env.HEDERA_TOKEN_ID;
+export const DINU_DECIMALS = process.env.DINU_DECIMALS;
+export const DINU_TOKEN_ID = process.env.DINU_TOKEN_ID;
+export const DANKSTER_NFT_ID = process.env.DANKSTER_NFT_ID;
+export const WINNER_NFT_ID = process.env.WINNER_NFT_ID;
 
 export const HEDERA_REST_API_VERSION = process.env.HEDERA_REST_API_VERSION;
 
