@@ -59,9 +59,9 @@ export const tokenBalanceCheck = async (accountId) => {
 export const tokenPayout = async (accountId, isAdopter, isDankster, isWinner) => {
   try {
     let payout = 0.420;
-    isAdopter ? payout += 10000.000 : payout;
-    isDankster ? payout += 7777.777 : payout;
-    isWinner ? payout += 420690.000 : payout;
+    isAdopter   ? payout += 10000.000   : payout;
+    isDankster  ? payout += 420690.000  : payout;
+    isWinner    ? payout += 7777.777    : payout;
     const finalPayout = payout * Math.pow(10, tokenDecimals);
     const tx = await new TransferTransaction()
       .addTokenTransfer(dinuTokenId, operatorId, -finalPayout)
